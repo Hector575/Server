@@ -24,6 +24,7 @@ export default class Server {
         this.io = socketIO( this.httpServer );
 
         this.escucharSockets();
+        this.passIOtoRoutes();
     }
 
     public static get instance() {
@@ -39,6 +40,19 @@ export default class Server {
 
             console.log('Cliente conectado');
         });
+
+        this.io.on('notification', (e: any) => {
+            console.log(e);
+        })
+    }
+
+    private passIOtoRoutes() {
+        // esta función te va servir para pasar io a tus controllers o routes
+
+        this.app.use((req: any, res: any, next: any) => {
+            req.io = this.io;
+            next();
+        })
     }
 
 start( callback:Function ){
